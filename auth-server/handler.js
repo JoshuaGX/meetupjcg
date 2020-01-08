@@ -1,18 +1,23 @@
 'use strict';
 
-module.exports.hello = async event => {
+const axios = require('axios');
+
+module.exports.getAccessToken = async (event) => {
+
+  const MEETUP_OAUTH_URL = 'https://secure.meetup.com/oauth2/access'
+    + '?client_id=YOUR_CONSUMER_KEY'
+    + '&client_secret=YOUR_CONSUMER_SECRET'
+    + '&grant_type=authorization_code'
+    + '&redirect_uri=YOUR_CONSUMER_REDIRECT_URI'
+    + '&code=USER_AUTHORIZATION_CODE';
+
+  const info = await axios.post(MEETUP_OAUTH_URL);
+
   return {
     statusCode: 200,
-    body: JSON.stringify(
-      {
-        message: 'Go Serverless v1.0! Your function executed successfully!',
-        input: event,
-      },
-      null,
-      2
-    ),
+    body: JSON.stringify({
+      access_token: info.data.access_token,
+      refresh_token: info.data.refresh_token,
+    }),
   };
-
-  // Use this code if you don't use the http event with the LAMBDA-PROXY integration
-  // return { message: 'Go Serverless v1.0! Your function executed successfully!', event };
 };
